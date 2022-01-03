@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f7fee913-fdd7-426a-8233-85c8e18c5bf8" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="3fa158ca-1249-41d9-a0ff-faf5ad60857b" >
+		<http:request-connection host="localhost" port="8081" />
+	</http:request-config>
+	<flow name="experienceFlow" doc:id="7a00fba6-0847-43b2-a62b-3650d1917376" >
+		<http:listener doc:name="Listener" doc:id="2fe84849-d12b-4c52-bd99-0dc6e7604cb7" config-ref="HTTP_Listener_config" path="/hello"/>
+		<set-payload value="akram bhai" doc:name="Set Payload" doc:id="6b180ed9-4e12-44fc-9660-ec8953338ed3" />
+		<logger level="INFO" doc:name="Copy_of_Logger" doc:id="feb2c29e-ecc6-4cef-8dbe-8d119a4a1530" message="after payload"/>
+		<http:request method="GET" doc:name="Request" doc:id="0d1d53e9-7eba-47b3-9ba7-091fa7837119" config-ref="HTTP_Request_configuration" path="/azeez" responseTimeout="60000"/>
+		<set-variable value="" doc:name="Set Variable" doc:id="6b7dd81b-a4d6-42ed-bc3e-eb83bab6191f" variableName="mass"/>
+		<flow-ref doc:name="Flow Reference" doc:id="4d3be63d-e606-410a-ae86-71ebc81773df" name="experienceFlow1" target="jakeerbhai"/>
+		<ee:transform doc:name="Transform Message" doc:id="cc01cbf8-9b65-4d5b-bf16-5758f60b047c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-payload value="main flow payload" doc:name="Set Payload" doc:id="0a6ee0bf-a3d4-4376-a397-d9294a76af08" />
+		<logger level="INFO" doc:name="Logger" doc:id="6e544aeb-759a-4f8a-974a-91bde17b8546" message="after transform"/>
+		<set-variable value="1234" doc:name="Set Variable" doc:id="7bbcccb6-c790-4a79-b4e7-6c7a65693a0f" variableName="last variable"/>
+		<ee:transform doc:name="Transform Message" doc:id="871d2b79-46a7-4aa3-b933-fd35e4c78cdf" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+vars.jakeerbhai]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="experienceFlow1" doc:id="62d9f196-06f5-4242-b5cc-19bff36ee170" >
+		<http:listener doc:name="Listener" doc:id="2f5b2437-cad6-4649-9376-6f06a2e26259" config-ref="HTTP_Listener_config" path="/azeez"/>
+		<logger level="INFO" doc:name="Logger" doc:id="2e1e76ed-2bc2-45e5-be18-321687ae1deb" message="after listern"/>
+		<ee:transform doc:name="Transform Message" doc:id="e6f97774-0cbe-416f-bd9a-def3b85ec8c8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
